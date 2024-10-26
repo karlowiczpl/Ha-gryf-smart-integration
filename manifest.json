@@ -1,0 +1,9 @@
+{
+    "domain": "gryf_smart",
+    "name": "Gryf Smart Integration",
+    "version": "1.0",
+    "documentation": "https://example.com",
+    "requirements": ["pyserial-asyncio-fast==0.13"],
+    "codeowners": ["@twoja_nazwa"],
+    "iot_class": "local_polling"
+}
