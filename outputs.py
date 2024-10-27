@@ -61,6 +61,12 @@ class Outputs(LightEntity):
             command = f"AT+SetOut={self._id},{','.join(states_list)}"
             self.send_command(command)
 
+        async def async_toggle(self, **kwargs):
+            states_list = ["0", "0", "0", "0", "0", "0"]
+            states_list[self._pin - 1] = "1"
+            command = f"AT+SetOut={self._id},{','.join(states_list)}"
+            self.send_command(command)
+
     def send_command(self, command):
         """Wysyła komendę do urządzenia."""
         try:

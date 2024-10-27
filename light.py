@@ -24,7 +24,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     light_id = 0
     pin = 0
     lights.append(Outputs(hass, name, light_id, pin))
-    pwm = (PWM(hass , "pwm" , 1 , 1))
+    pwm = (PWM(hass , "pwm" , 4 , 1))
 
     lights.append(pwm)
     
