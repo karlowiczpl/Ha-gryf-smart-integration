@@ -1,6 +1,8 @@
 import serial
 from homeassistant.components.sensor import SensorEntity
 
+from .const import BAUDRATE , GRYF_OUT_NAME
+
 ser = None
 sensorEntity = []
 
@@ -14,8 +16,7 @@ def setupPlatform(async_add_entities):
 def setup_serial(port):
     global ser
     
-    baudrate = 115200
-    ser = serial.Serial(port, baudrate, timeout=1)
+    ser = serial.Serial(port, BAUDRATE, timeout=1)
 
 def send_command(command):
     if ser: 
@@ -30,7 +31,7 @@ class SendSensor(SensorEntity):
 
     def __init__(self) -> None:
         self._state = None
-        self._name = "Gryf OUT"
+        self._name = GRYF_OUT_NAME
 
     @property
     def name(self) -> str:

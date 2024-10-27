@@ -1,7 +1,8 @@
 from homeassistant.components.cover import CoverEntity
 from homeassistant.const import STATE_OPEN, STATE_CLOSED, STATE_OPENING, STATE_CLOSING
-import serial
+
 from .send import send_command
+from .const import COVER_DEVICE_CLASS
 
 covers = []
 
@@ -21,12 +22,12 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         cover_id = cover.get("id")
         pin = cover.get("pin")
         time = cover.get("time")
-        covers.append(Cover(hass, name, cover_id, pin, time))
+        covers.append(Cover(name, cover_id, pin, time))
 
     async_add_entities(covers)
 
 class Cover(CoverEntity):
-    def __init__(self, hass, name, cover_id, pin, time):
+    def __init__(self, name, cover_id, pin, time):
         self._name = name
         self._pin = pin
         self._id = cover_id
@@ -65,7 +66,7 @@ class Cover(CoverEntity):
 
     @property
     def device_class(self):
-        return 'window'
+        return COVER_DEVICE_CLASS
 
     async def changeRolState(parsed_states):
         if parsed_states[self._id] == "0" and self._is_opening:
@@ -78,7 +79,7 @@ class Cover(CoverEntity):
             self._state = STATE_CLOSED
             self.schedule_update_ha_state()
 
-    def open_cover(self, **kwargs):
+    async def async_open_cover(self, **kwargs):
         self._is_opening = True
         self._is_closing = False
         self._state = STATE_OPENING
@@ -92,7 +93,7 @@ class Cover(CoverEntity):
         send_command(command)
         self.schedule_update_ha_state()
 
-    def close_cover(self, **kwargs):
+    async def async_close_cover(self, **kwargs):
         self._is_opening = True
         self._is_closing = False
         self._state = STATE_CLOSING
@@ -106,7 +107,7 @@ class Cover(CoverEntity):
         send_command(command)
         self.schedule_update_ha_state()
 
-    def stop_cover(self, **kwargs):
+    async def async_stop_cover(self, **kwargs):
         self._is_opening = True
         self._is_closing = False
         self._state = None

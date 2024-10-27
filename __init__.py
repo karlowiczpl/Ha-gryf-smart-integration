@@ -11,22 +11,9 @@ from .binary_sensor import updateAllStates
 from .switch import new_switch_command
 from .cover import new_rols_command
 from .send import setup_serial
+from .const import DOMAIN , CONF_LIGHTS , CONF_BUTTON , CONF_NAME , CONF_ID , CONF_PIN , CONF_SERIAL , CONF_DOORS , CONF_WINDOW , CONF_TEMPERATURE , CONF_COVER , CONF_TIME , CONF_LOCK , CONF_PWM
 
 _LOGGER = logging.getLogger(__name__)
-
-DOMAIN = "gryf_smart"
-CONF_LIGHTS = "lights"
-CONF_BUTTON = "buttons"
-CONF_NAME = "name"
-CONF_ID = "id"
-CONF_PIN = "pin"
-CONF_SERIAL = "port"
-CONF_DOORS = "doors"
-CONF_WINDOW = "windows"
-CONF_TEMPERATURE = "temperature"
-CONF_COVER = "covers"
-CONF_TIME = "time"
-CONF_LOCK = "lock"
 
 STANDARD_SCHEMA = vol.Schema({
     vol.Required(CONF_NAME): cv.string,
@@ -49,6 +36,7 @@ CONFIG_SCHEMA = vol.Schema({
         vol.Optional(CONF_TEMPERATURE): vol.All(cv.ensure_list, [STANDARD_SCHEMA]),
         vol.Optional(CONF_COVER): vol.All(cv.ensure_list, [COVER_SCHEMA]),
         vol.Optional(CONF_LOCK): vol.All(cv.ensure_list, [STANDARD_SCHEMA]),
+        vol.Optional(CONF_PWM): vol.All(cv.ensure_list, [STANDARD_SCHEMA]),
         vol.Required(CONF_SERIAL): cv.string,
     })
 }, extra=vol.ALLOW_EXTRA)
@@ -63,7 +51,6 @@ async def sensor_state_changed(event):
     parsed_states[-1] = last_state[0]
     
     if str(parts[1]) == "O":
-        # await new_light_command(parsed_states)
         await new_switch_command(parsed_states)
     
     if str(parts[1]) == "I":
@@ -78,7 +65,6 @@ async def sensor_state_changed(event):
 
     if str(parts[1]) == "T":
         await temp_reload(parsed_states)
-        _LOGGER.debug("Executing new_light_command with: %s", parsed_states)
 
     if str(parts[1]) == "R":
         await new_rols_command(parsed_states)
@@ -97,12 +83,9 @@ async def async_setup(hass: HomeAssistant, config: dict):
     temperature_config = config[DOMAIN].get(CONF_TEMPERATURE , [])
     cover_config = config[DOMAIN].get(CONF_COVER , [])
     lock_conf = config[DOMAIN].get(CONF_LOCK , [])
+    pwm_config = config[DOMAIN].get(CONF_PWM , [])
 
     setup_serial(port_config)
-
-    # hass.async_create_task(
-    #     hass.helpers.discovery.async_load_platform('light', DOMAIN, lights_config, config)
-    # )
     
     sensor_config = [buttons_config , port_config , temperature_config]
 
@@ -126,6 +109,10 @@ async def async_setup(hass: HomeAssistant, config: dict):
         hass.helpers.discovery.async_load_platform('cover', DOMAIN, cover_config , config)
     )
 
-    async_track_state_change_event(hass, 'sensor.gryf_monitor', sensor_state_changed)
+    hass.async_create_task(
+        hass.helpers.discovery.async_load_platform('number', DOMAIN, pwm_config , config)
+    )
+
+    async_track_state_change_event(hass, 'sensor.gryf_in', sensor_state_changed)
 
     return True

@@ -3,6 +3,7 @@ from homeassistant.core import HomeAssistant
 import serial
 import time
 from .send import send_command
+from .const import LOCK_ON_ICON , LOCK_OFF_ICON , LIGHT_ON_ICON , LIGHT_OFF_ICON
 
 switches = []
 
@@ -65,9 +66,9 @@ class Switch(SwitchEntity):
     @property
     def icon(self):
         if self._type:
-            return "mdi:lock" if self._is_on else "mdi:lock-open-variant"
+            return LOCK_ON_ICON if self._is_on else LOCK_OFF_ICON
         else: 
-            return "mdi:lightbulb-on" if self._is_on else "mdi:lightbulb-off"
+            return LIGHT_ON_ICON if self._is_on else LIGHT_OFF_ICON
     
     def state_on(self):
         self._is_on = True

@@ -18,6 +18,8 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
+from .const import BAUDRATE , GRYF_IN_NAME
+
 class SerialSensor(SensorEntity):
     """Representation of a Serial sensor."""
 
@@ -28,10 +30,10 @@ class SerialSensor(SensorEntity):
         port,
     ):
         """Initialize the Serial sensor."""
-        self._name = "Gryf Monitor"
+        self._name = GRYF_IN_NAME
         self._state = None
         self._port = port
-        self._baudrate = 115200
+        self._baudrate = BAUDRATE
         self._bytesize = serial_asyncio.serial.EIGHTBITS
         self._parity = serial_asyncio.serial.PARITY_NONE
         self._stopbits = serial_asyncio.serial.STOPBITS_ONE

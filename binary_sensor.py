@@ -13,13 +13,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         name = door.get("name")
         door_id = door.get("id")
         pin = door.get("pin")
-        binary_sensor.append(DoorSensor(hass, name, door_id, pin, "door"))
+        binary_sensor.append(DoorSensor(name, door_id, pin, "door"))
 
     for window in windows_config:
         name = window.get("name")
         door_id = window.get("id")
         pin = window.get("pin")
-        binary_sensor.append(DoorSensor(hass, name, door_id, pin, "window"))
+        binary_sensor.append(DoorSensor(name, door_id, pin, "window"))
 
     async_add_entities(binary_sensor)
 
@@ -33,13 +33,12 @@ async def updateAllStates(array):
 class DoorSensor(BinarySensorEntity):
     """Reprezentuje prosty czujnik drzwi."""
 
-    def __init__(self, hass , name: str , door_id , pin , sensorClass):
+    def __init__(self, name: str , door_id , pin , sensorClass):
         """Inicjalizuje czujnik drzwi."""
         self._name = name
         self._is_open = False
         self._pin = pin
         self._id = door_id
-        self._hass = hass
         self._class = sensorClass
 
     @property
