@@ -37,8 +37,8 @@ class DoorSensor(BinarySensorEntity):
         """Inicjalizuje czujnik drzwi."""
         self._name = name
         self._is_open = False
-        self._pin = 1
-        self._id = 1
+        self._pin = pin
+        self._id = door_id
         self._hass = hass
         self._class = sensorClass
 
@@ -63,9 +63,9 @@ class DoorSensor(BinarySensorEntity):
         if array[0] == str(self._id):
 
             if(array[self._pin] == str(1)):
-                self.open_door()
-            else:
                 self.close_door()
+            else:
+                self.open_door()
 
     def open_door(self):
         """Symuluje otwarcie drzwi."""
