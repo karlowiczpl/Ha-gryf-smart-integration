@@ -27,7 +27,6 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
 class Cover(CoverEntity):
     def __init__(self, hass, name, cover_id, pin, time):
-        """Inicjalizacja instancji cover"""
         self._name = name
         self._pin = pin
         self._id = cover_id
@@ -36,28 +35,20 @@ class Cover(CoverEntity):
         self._is_closing = False
         self._position = None 
         self._time = time
-        self.serial_port = "/dev/ttyS0"
-        self.baudrate = 115200
-        self.ser = serial.Serial(self.serial_port, self.baudrate, timeout=1)
-
     @property
     def name(self):
-        """Nazwa urządzenia w Home Assistant"""
         return self._name
 
     @property
     def current_cover_position(self):
-        """Aktualna pozycja osłony w procentach"""
         return self._position
 
     @property
     def is_opening(self):
-        """Czy osłona się otwiera"""
         return self._is_opening
 
     @property
     def is_closing(self):
-        """Czy osłona się zamyka"""
         return self._is_closing
 
     @property
@@ -70,12 +61,10 @@ class Cover(CoverEntity):
 
     @property
     def is_closed(self):
-        """Czy osłona jest zamknięta"""
         return self._state == STATE_CLOSED
 
     @property
     def device_class(self):
-        """Typ osłony (np. żaluzje, brama)"""
         return 'window'
 
     async def changeRolState(parsed_states):
@@ -89,11 +78,7 @@ class Cover(CoverEntity):
             self._state = STATE_CLOSED
             self.schedule_update_ha_state()
 
-            
-
-
     def open_cover(self, **kwargs):
-        """Obsługuje otwieranie osłony"""
         self._is_opening = True
         self._is_closing = False
         self._state = STATE_OPENING
@@ -108,7 +93,6 @@ class Cover(CoverEntity):
         self.schedule_update_ha_state()
 
     def close_cover(self, **kwargs):
-        """Obsługuje zamykanie osłony"""
         self._is_opening = True
         self._is_closing = False
         self._state = STATE_CLOSING
@@ -136,20 +120,9 @@ class Cover(CoverEntity):
         self.schedule_update_ha_state()
 
     def set_cover_position(self, position, **kwargs):
-        """Ustawia osłonę na określoną pozycję"""
         self._position = position
-        # Tutaj dodaj logikę do ustawiania pozycji, jeśli urządzenie obsługuje ustawienie pozycji
         self.schedule_update_ha_state()
 
     @property
     def state(self):
-        """Aktualny stan osłony"""
         return self._state
-
-    # def send_command(self, command):
-    #     """Wysyła komendę do urządzenia."""
-    #     try:
-    #         full_command = command + "\r"
-    #         self.ser.write(full_command.encode('utf-8'))
-    #     except Exception as e:
-    #         print(f"Error sending command: {e}")

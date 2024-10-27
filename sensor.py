@@ -5,6 +5,7 @@ from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from .button import Button
 from .serial import SerialSensor
 from .temperature import Temperature
+from .send import setupPlatform
 
 buttons = []
 temp = []
@@ -63,3 +64,4 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     sensor = SerialSensor(port)
     async_add_entities([sensor], True)
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, sensor.stop_serial_read)
+    setupPlatform(async_add_entities)
