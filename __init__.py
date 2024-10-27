@@ -6,11 +6,11 @@ from homeassistant.helpers.event import async_track_state_change_event
 import voluptuous as vol
 import logging
 
-from .light import async_setup_platform, new_light_command
 from .sensor import input_state_relaod , ps_state_reload , pl_state_reload , temp_reload
 from .binary_sensor import updateAllStates
 from .switch import new_switch_command
 from .cover import new_rols_command
+from .send import setup_serial
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ async def sensor_state_changed(event):
     parsed_states[-1] = last_state[0]
     
     if str(parts[1]) == "O":
-        await new_light_command(parsed_states)
+        # await new_light_command(parsed_states)
         await new_switch_command(parsed_states)
     
     if str(parts[1]) == "I":
@@ -97,6 +97,8 @@ async def async_setup(hass: HomeAssistant, config: dict):
     temperature_config = config[DOMAIN].get(CONF_TEMPERATURE , [])
     cover_config = config[DOMAIN].get(CONF_COVER , [])
     lock_conf = config[DOMAIN].get(CONF_LOCK , [])
+
+    setup_serial(port_config)
 
     # hass.async_create_task(
     #     hass.helpers.discovery.async_load_platform('light', DOMAIN, lights_config, config)

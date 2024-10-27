@@ -1,6 +1,7 @@
 from homeassistant.components.cover import CoverEntity
 from homeassistant.const import STATE_OPEN, STATE_CLOSED, STATE_OPENING, STATE_CLOSING
 import serial
+from .send import send_command
 
 covers = []
 
@@ -103,7 +104,7 @@ class Cover(CoverEntity):
         control = self._id + t1 + sum(states)
 
         command = f"AT+SetRol={self._id},{t1},{states[0]},{states[1]},{states[2]},{states[3]},{control}"
-        self.send_command(command)
+        send_command(command)
         self.schedule_update_ha_state()
 
     def close_cover(self, **kwargs):
@@ -118,7 +119,7 @@ class Cover(CoverEntity):
         control = self._id + t1 + sum(states)
 
         command = f"AT+SetRol={self._id},{t1},{states[0]},{states[1]},{states[2]},{states[3]},{control}"
-        self.send_command(command)
+        send_command(command)
         self.schedule_update_ha_state()
 
     def stop_cover(self, **kwargs):
@@ -131,7 +132,7 @@ class Cover(CoverEntity):
         control = self._id + sum(states)
 
         command = f"AT+SetRol={self._id},0,{states[0]},{states[1]},{states[2]},{states[3]},{control}"
-        self.send_command(command)
+        send_command(command)
         self.schedule_update_ha_state()
 
     def set_cover_position(self, position, **kwargs):
@@ -145,10 +146,10 @@ class Cover(CoverEntity):
         """Aktualny stan osłony"""
         return self._state
 
-    def send_command(self, command):
-        """Wysyła komendę do urządzenia."""
-        try:
-            full_command = command + "\r"
-            self.ser.write(full_command.encode('utf-8'))
-        except Exception as e:
-            print(f"Error sending command: {e}")
+    # def send_command(self, command):
+    #     """Wysyła komendę do urządzenia."""
+    #     try:
+    #         full_command = command + "\r"
+    #         self.ser.write(full_command.encode('utf-8'))
+    #     except Exception as e:
+    #         print(f"Error sending command: {e}")
