@@ -13,6 +13,7 @@ CONF_COVER = "covers"
 CONF_TIME = "time"
 CONF_LOCK = "lock"
 CONF_PWM = "pwm"
+CONF_CLIMATE = "climate"
 
 COVER_DEVICE_CLASS = "window"
 

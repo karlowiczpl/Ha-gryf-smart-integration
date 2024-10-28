@@ -37,6 +37,6 @@ class Pwm(NumberEntity):
         self.schedule_update_ha_state()
 
     @property
-    def value(self) -> float:
+    def native_value(self) -> float:
         """Zwraca aktualną wartość PWM."""
         return self._attr_value

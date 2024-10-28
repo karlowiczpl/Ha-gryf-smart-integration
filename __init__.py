@@ -11,7 +11,13 @@ from .binary_sensor import updateAllStates
 from .switch import new_switch_command
 from .cover import new_rols_command
 from .send import setup_serial
-from .const import DOMAIN , CONF_LIGHTS , CONF_BUTTON , CONF_NAME , CONF_ID , CONF_PIN , CONF_SERIAL , CONF_DOORS , CONF_WINDOW , CONF_TEMPERATURE , CONF_COVER , CONF_TIME , CONF_LOCK , CONF_PWM
+from .const import DOMAIN , CONF_LIGHTS , CONF_BUTTON , CONF_NAME , CONF_ID , CONF_PIN , CONF_SERIAL , CONF_DOORS , CONF_WINDOW , CONF_TEMPERATURE , CONF_COVER , CONF_TIME , CONF_LOCK , CONF_PWM , CONF_CLIMATE
+from .climate import new_climate_temp , new_climate_out
+
+CONF_T_ID = "t_id"
+CONF_O_ID = "o_id"
+CONF_T_PIN = "t_pin"
+CONF_O_PIN = "o_pin"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -26,6 +32,13 @@ COVER_SCHEMA = vol.Schema({
     vol.Required(CONF_PIN): cv.positive_int,
     vol.Required(CONF_TIME): cv.positive_int,
 })
+CLIMATE_SCHEMA = vol.Schema({
+    vol.Required(CONF_NAME): cv.string,
+    vol.Required(CONF_T_ID): cv.positive_int,
+    vol.Required(CONF_O_ID): cv.positive_int,
+    vol.Required(CONF_T_PIN): cv.positive_int,
+    vol.Required(CONF_O_PIN): cv.positive_int,
+})
 
 CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema({
@@ -37,6 +50,7 @@ CONFIG_SCHEMA = vol.Schema({
         vol.Optional(CONF_COVER): vol.All(cv.ensure_list, [COVER_SCHEMA]),
         vol.Optional(CONF_LOCK): vol.All(cv.ensure_list, [STANDARD_SCHEMA]),
         vol.Optional(CONF_PWM): vol.All(cv.ensure_list, [STANDARD_SCHEMA]),
+        vol.Optional(CONF_CLIMATE): vol.All(cv.ensure_list, [CLIMATE_SCHEMA]),
         vol.Required(CONF_SERIAL): cv.string,
     })
 }, extra=vol.ALLOW_EXTRA)
@@ -52,6 +66,7 @@ async def sensor_state_changed(event):
     
     if str(parts[1]) == "O":
         await new_switch_command(parsed_states)
+        await new_climate_out(parsed_states)
     
     if str(parts[1]) == "I":
         await input_state_relaod(parsed_states)
@@ -65,6 +80,7 @@ async def sensor_state_changed(event):
 
     if str(parts[1]) == "T":
         await temp_reload(parsed_states)
+        await new_climate_temp(parsed_states)
 
     if str(parts[1]) == "R":
         await new_rols_command(parsed_states)
@@ -84,14 +100,17 @@ async def async_setup(hass: HomeAssistant, config: dict):
     cover_config = config[DOMAIN].get(CONF_COVER , [])
     lock_conf = config[DOMAIN].get(CONF_LOCK , [])
     pwm_config = config[DOMAIN].get(CONF_PWM , [])
+    climate_config = config[DOMAIN].get(CONF_CLIMATE , [])
 
     setup_serial(port_config)
     
     sensor_config = [buttons_config , port_config , temperature_config]
 
-    hass.async_create_task(
-        hass.helpers.discovery.async_load_platform('sensor', DOMAIN, sensor_config, config)
-    )
+    # hass.async_create_task(
+    #     hass.helpers.discovery.async_load_platform('sensor', DOMAIN, sensor_config, config)
+    # )
+
+    await hass.helpers.discovery.async_load_platform('sensor', DOMAIN, sensor_config, config)
 
     binary_sensor_config = [doors_config , window_config]
 
@@ -111,6 +130,10 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
     hass.async_create_task(
         hass.helpers.discovery.async_load_platform('number', DOMAIN, pwm_config , config)
+    )
+
+    hass.async_create_task(
+        hass.helpers.discovery.async_load_platform('climate', DOMAIN, climate_config , config)
     )
 
     async_track_state_change_event(hass, 'sensor.gryf_in', sensor_state_changed)
