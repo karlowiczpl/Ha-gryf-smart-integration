@@ -1,10 +1,10 @@
-# 🌟 **Nowe możliwości integracji Gryf Smart z Home Assistant** 🌟
+## 🌟 **Nowe możliwości integracji Gryf Smart z Home Assistant** 🌟
 
 Integracja **Gryf Smart** z **Home Assistant** wynosi Twój inteligentny dom na nowy poziom, dając pełną kontrolę nad sprzętami RTV i AGD oraz oferując szeroki wachlarz zaawansowanych funkcji. Sprawdź, co możesz zyskać:
 
 ---
 
-### 🎛️ **Wsparcie dla urządzeń RTV i AGD**
+#### 🎛️ **Wsparcie dla urządzeń RTV i AGD**
 Dzięki integracji zyskujesz dostęp do sterowania urządzeniami, które wcześniej były trudniejsze do połączenia z systemami smart home, w tym:
 - **Telewizory**
 - **Pralki**
@@ -15,7 +15,7 @@ To daje pełną kontrolę nad sprzętem i **monitorowanie ich pracy w czasie rze
 
 ---
 
-### ⚙️ **Zaawansowane scenariusze automatyzacji**
+#### ⚙️ **Zaawansowane scenariusze automatyzacji**
 Twórz własne, **spersonalizowane automatyzacje** i scenariusze, które ułatwią codzienne czynności:
 - 🕒 **Uruchamiaj pralkę** o wybranej porze,
 - 🌞 **Dostosowuj jasność telewizora** w zależności od pory dnia.
@@ -24,7 +24,7 @@ Integracja pozwala na połączenie urządzeń z **czujnikami ruchu** czy **oświ
 
 ---
 
-### 📊 **Rozbudowane dashboardy**
+#### 📊 **Rozbudowane dashboardy**
 Gryf Smart umożliwia tworzenie **pięknych, intuicyjnych dashboardów**, które wyświetlają stan i status urządzeń na jednym ekranie. Możesz dopasować wygląd i układ informacji, by **monitorować kluczowe parametry**, takie jak:
 - 🧺 **Status prania**,
 - ❄️ **Temperatura lodówki**.
@@ -33,7 +33,7 @@ Wszystko po to, by zarządzanie urządzeniami było **proste i przyjemne**.
 
 ---
 
-### 🌐 **Dostęp zdalny i powiadomienia**
+#### 🌐 **Dostęp zdalny i powiadomienia**
 Dzięki integracji możesz:
 - **Otrzymywać powiadomienia** o stanie urządzeń na urządzenia mobilne, co zwiększa **bezpieczeństwo** i **wygodę**.
 - **Zdalnie kontrolować urządzenia** — np. wyłączyć telewizor, jeśli zapomniałeś to zrobić, wychodząc z domu.
