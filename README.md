@@ -78,7 +78,7 @@ Idealne rozwiązanie dla tych, którzy cenią sobie **pełną kontrolę** w każ
   1. temperature - klasyczny termometr z wykresem
   2. climate - element pomiarowy regulatora
 
-## Schemat wpisywania konfiguracji 
+## Schemat wpisywania konfiguracji
 
 #### wrzystkie encje do utworzenia wpisujemy w pliku configuration.yaml. Naszą integracje deklarujemy nazwą gryf_smart.
 
@@ -86,3 +86,12 @@ Idealne rozwiązanie dla tych, którzy cenią sobie **pełną kontrolę** w każ
 gryf_smart:
   port: "/dev/ttyS0"
   ...
+```
+
+#### UWAGA!! w przypadku nie podania portu home assistant zwórci błąd
+
+
+| Rodzaj Encji | identyfikator | schemat konfiguracji | charakterystyka | typ złącza |
+| ------------ | ------------- | -------------------- | --------------- | ------------ |
+| switch       | light         | Standard             |                 | O            |
+|              |               |                      |                 |              |
