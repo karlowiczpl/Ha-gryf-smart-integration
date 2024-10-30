@@ -4,13 +4,19 @@ from homeassistant.const import STATE_OPEN, STATE_CLOSED, STATE_OPENING, STATE_C
 from .send import send_command
 from .const import COVER_DEVICE_CLASS
 
+import logging
+
+_LOGGER = logging.getLogger(__name__)
+
 covers = []
+
+STATE_PAUSED = "zatrzymano"
 
 async def new_rols_command(parsed_states):
     if covers:
         for i in range(len(covers)):
             if str(covers[i].get_id) == parsed_states[0]:
-                covers[i].changeRolState(parsed_states)
+                await covers[i].changeRolState(parsed_states)
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     global covers
@@ -68,21 +74,37 @@ class Cover(CoverEntity):
     def device_class(self):
         return COVER_DEVICE_CLASS
 
-    async def changeRolState(parsed_states):
-        if parsed_states[self._id] == "0" and self._is_opening:
-            self._is_opening = False
-            self._state = STATE_OPEN
-            self.schedule_update_ha_state()
+    async def changeRolState(self , parsed_states):
 
-        if parsed_states[self._id] == "0" and self._is_closing:
+        if parsed_states[self._pin] == "0":
+            if self._is_opening:
+                self._state = STATE_OPEN
+            elif self._is_closing:
+                self._state = STATE_CLOSED
+            else:
+                self._state = STATE_PAUSED
+            self._is_opening = False
             self._is_closing = False
+
+        if parsed_states[self._pin] == "2":
             self._state = STATE_CLOSED
-            self.schedule_update_ha_state()
+            self._is_opening = False
+            self._is_closing = True
+            self._state = STATE_CLOSING
+
+        if parsed_states[self._pin] == "1":
+            self._state = STATE_OPEN
+            self._is_opening = True
+            self._is_closing = False
+            self._state = STATE_OPENING
+
+        await self.async_write_ha_state()
+            
+        
 
     async def async_open_cover(self, **kwargs):
-        self._is_opening = True
+        self._is_opening = False
         self._is_closing = False
-        self._state = STATE_OPENING
 
         states = [0 , 0 , 0 , 0]
         states[self._pin - 1] = 2
@@ -94,9 +116,8 @@ class Cover(CoverEntity):
         self.schedule_update_ha_state()
 
     async def async_close_cover(self, **kwargs):
-        self._is_opening = True
+        self._is_opening = False
         self._is_closing = False
-        self._state = STATE_CLOSING
 
         states = [0 , 0 , 0 , 0]
         states[self._pin - 1] = 1

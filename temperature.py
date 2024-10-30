@@ -43,7 +43,7 @@ class Temperature(SensorEntity):
     async def set_new_state(self, state) -> None:
         """Fetch new state data for the sensor."""
 
-        _LOGGER.debug("New temperature state, id: %s , out pin: %s, state: %s" , self._id , self._pin , state)
+        # _LOGGER.debug("New temperature state, id: %s , out pin: %s, state: %s" , self._id , self._pin , state)
         
         self._state = state
         self.async_write_ha_state()

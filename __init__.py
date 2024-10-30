@@ -14,10 +14,15 @@ from .send import setup_serial
 from .const import DOMAIN , CONF_LIGHTS , CONF_BUTTON , CONF_NAME , CONF_ID , CONF_PIN , CONF_SERIAL , CONF_DOORS , CONF_WINDOW , CONF_TEMPERATURE , CONF_COVER , CONF_TIME , CONF_LOCK , CONF_PWM , CONF_CLIMATE
 from .climate import new_climate_temp , new_climate_out
 
+import logging
+
+_LOGGER = logging.getLogger(__name__)
+
 CONF_T_ID = "t_id"
 CONF_O_ID = "o_id"
 CONF_T_PIN = "t_pin"
 CONF_O_PIN = "o_pin"
+CONF_ID_COUNT = "id"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -52,6 +57,7 @@ CONFIG_SCHEMA = vol.Schema({
         vol.Optional(CONF_PWM): vol.All(cv.ensure_list, [STANDARD_SCHEMA]),
         vol.Optional(CONF_CLIMATE): vol.All(cv.ensure_list, [CLIMATE_SCHEMA]),
         vol.Required(CONF_SERIAL): cv.string,
+        vol.Optional(CONF_ID_COUNT): cv.positive_int,
     })
 }, extra=vol.ALLOW_EXTRA)
 
@@ -103,38 +109,16 @@ async def async_setup(hass: HomeAssistant, config: dict):
     climate_config = config[DOMAIN].get(CONF_CLIMATE , [])
 
     setup_serial(port_config)
-    
     sensor_config = [buttons_config , port_config , temperature_config]
-
-    # hass.async_create_task(
-    #     hass.helpers.discovery.async_load_platform('sensor', DOMAIN, sensor_config, config)
-    # )
-
-    await hass.helpers.discovery.async_load_platform('sensor', DOMAIN, sensor_config, config)
-
     binary_sensor_config = [doors_config , window_config]
-
-    hass.async_create_task(
-        hass.helpers.discovery.async_load_platform('binary_sensor', DOMAIN, binary_sensor_config , config)
-    )
-
     switch_config = [lights_config , lock_conf , port_config]
 
-    hass.async_create_task(
-        hass.helpers.discovery.async_load_platform('switch', DOMAIN, switch_config , config)
-    )
-
-    hass.async_create_task(
-        hass.helpers.discovery.async_load_platform('cover', DOMAIN, cover_config , config)
-    )
-
-    hass.async_create_task(
-        hass.helpers.discovery.async_load_platform('number', DOMAIN, pwm_config , config)
-    )
-
-    hass.async_create_task(
-        hass.helpers.discovery.async_load_platform('climate', DOMAIN, climate_config , config)
-    )
+    await hass.helpers.discovery.async_load_platform('sensor', DOMAIN, sensor_config, config)
+    await hass.helpers.discovery.async_load_platform('binary_sensor', DOMAIN, binary_sensor_config , config)
+    await hass.helpers.discovery.async_load_platform('switch', DOMAIN, switch_config , config)
+    await hass.helpers.discovery.async_load_platform('cover', DOMAIN, cover_config , config)
+    await hass.helpers.discovery.async_load_platform('number', DOMAIN, pwm_config , config)
+    await hass.helpers.discovery.async_load_platform('climate', DOMAIN, climate_config , config)
 
     async_track_state_change_event(hass, 'sensor.gryf_in', sensor_state_changed)
 

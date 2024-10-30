@@ -8,6 +8,7 @@ from homeassistant.components.climate.const import (
 from homeassistant.const import UnitOfTemperature, ATTR_TEMPERATURE
 
 from .send import send_command
+from .const import CLIMATE_START_TEMPERATURE, CLIMATE_START_TARGET_TEMPERATURE, CLIMATE_MIN_TEMP, CLIMATE_MAX_TEMP
 
 climates = []
 
@@ -33,21 +34,20 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         name = climate.get("name")
         t_id = climate.get("t_id")
         t_pin = climate.get("t_pin")
-        o_id = climate.get("t_id")
-        o_pin = climate.get("t_pin")
+        o_id = climate.get("o_id")
+        o_pin = climate.get("o_pin")
         climates.append(Climate(name, t_id, t_pin, o_id, o_pin))
 
     async_add_entities(climates)
 
 class Climate(ClimateEntity):
     def __init__(self , name, t_id, t_pin, o_id , o_pin):
-        """Inicjalizacja klasy klimatyzacji."""
         self._name = name
-        self._temperature = 20
-        self._target_temperature = 20
+        self._temperature = CLIMATE_START_TEMPERATURE
+        self._target_temperature = CLIMATE_START_TARGET_TEMPERATURE
         self._hvac_mode = HVACMode.OFF
-        self._min_temp = 5
-        self._max_temp = 35
+        self._min_temp = CLIMATE_MIN_TEMP
+        self._max_temp = CLIMATE_MAX_TEMP
         self._t_pin = t_pin
         self._t_id = t_id
         self._o_pin = o_pin
@@ -55,7 +55,8 @@ class Climate(ClimateEntity):
         self._hvac_action = HVACAction.IDLE
 
     async def set_new_state(self , state):
-        self._temperature = state
+        self._temperature = float(state)
+        await self.update()
 
     async def update_out(self , parsed_states):
         if parsed_states[self._o_pin] == "1":
@@ -68,32 +69,26 @@ class Climate(ClimateEntity):
 
     @property
     def hvac_action(self):
-        """Zwraca aktualny stan akcji grzania."""
         return self._hvac_action
 
     @property
     def name(self):
-        """Zwraca nazwę urządzenia."""
         return self._name
 
     @property
     def temperature_unit(self):
-        """Zwraca jednostkę temperatury."""
         return UnitOfTemperature.CELSIUS
 
     @property
     def current_temperature(self):
-        """Zwraca aktualną temperaturę."""
         return self._temperature
 
     @property
     def target_temperature(self):
-        """Zwraca docelową temperaturę."""
         return self._target_temperature
 
     @property
     def hvac_mode(self):
-        """Zwraca aktualny tryb HVAC."""
         return self._hvac_mode
 
     @property
@@ -110,41 +105,34 @@ class Climate(ClimateEntity):
 
     @property
     def hvac_modes(self):
-        """Lista dostępnych trybów pracy."""
-        return [HVACMode.HEAT, HVACMode.OFF, HVACMode.AUTO]
+        return [HVACMode.HEAT, HVACMode.OFF]
 
     @property
     def supported_features(self):
-        """Zwraca obsługiwane funkcje."""
         return ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.TURN_ON | ClimateEntityFeature.TURN_OFF
 
 
     @property
     def min_temp(self):
-        """Zwraca minimalną dostępną temperaturę."""
         return self._min_temp
 
     @property
     def max_temp(self):
-        """Zwraca maksymalną dostępną temperaturę."""
         return self._max_temp
 
     async def async_set_temperature(self, **kwargs):
-        """Ustawia docelową temperaturę."""
         if ATTR_TEMPERATURE in kwargs:
             self._target_temperature = kwargs[ATTR_TEMPERATURE]
             self.async_write_ha_state()
         await self.update()
 
     async def async_set_hvac_mode(self, hvac_mode):
-        """Ustawia tryb pracy HVAC."""
         if hvac_mode in self.hvac_modes:
             self._hvac_mode = hvac_mode
             self.async_write_ha_state()
         await self.update()
 
     async def update(self):
-        """Aktualizacja logiki klimatyzacji."""
         if self._hvac_mode == HVACMode.HEAT:
             states = ["0"] * (6 if self._o_id < 7 else 8)
             states[self._o_pin - 1] = "1" if self._temperature < self._target_temperature else "2"

@@ -78,7 +78,10 @@ class Switch(SwitchEntity):
     
     def turn_on(self, **kwargs):
         if self._type != 2:
-            states_list = ["0", "0", "0", "0", "0", "0"]
+            if self._pin > 6:
+                states_list = ["0", "0", "0", "0", "0", "0" , "0" , "0"]
+            else:
+                states_list = ["0", "0", "0", "0", "0", "0"]
             states_list[self._pin - 1] = "1"
             command = f"AT+SetOut={self._id},{','.join(states_list)}"
             send_command(command)
@@ -89,7 +92,10 @@ class Switch(SwitchEntity):
 
     def turn_off(self, **kwargs):
         if self._type != 2:
-            states_list = ["0", "0", "0", "0", "0", "0"]
+            if self._pin > 6:
+                states_list = ["0", "0", "0", "0", "0", "0" , "0" , "0"]
+            else:
+                states_list = ["0", "0", "0", "0", "0", "0"]
             states_list[self._pin - 1] = "2"
             command = f"AT+SetOut={self._id},{','.join(states_list)}"
             send_command(command)
@@ -100,7 +106,10 @@ class Switch(SwitchEntity):
 
     async def async_toggle(self, **kwargs):
         if self._type != 2:
-            states_list = ["0", "0", "0", "0", "0", "0"]
+            if self._pin > 6:
+                states_list = ["0", "0", "0", "0", "0", "0" , "0" , "0"]
+            else:
+                states_list = ["0", "0", "0", "0", "0", "0"]
             states_list[self._pin - 1] = "3"
             command = f"AT+SetOut={self._id},{','.join(states_list)}"
             send_command(command)
@@ -110,7 +119,10 @@ class Switch(SwitchEntity):
 
     async def async_turn_on(self, **kwargs):
         if self._type != 2:
-            states_list = ["0", "0", "0", "0", "0", "0"]
+            if self._pin > 6:
+                states_list = ["0", "0", "0", "0", "0", "0" , "0" , "0"]
+            else:
+                states_list = ["0", "0", "0", "0", "0", "0"]
             states_list[self._pin - 1] = "1"
             command = f"AT+SetOut={self._id},{','.join(states_list)}"
             send_command(command)
@@ -120,7 +132,10 @@ class Switch(SwitchEntity):
 
     async def async_turn_off(self, **kwargs):
         if self._type != 2:
-            states_list = ["0", "0", "0", "0", "0", "0"]
+            if self._pin > 6:
+                states_list = ["0", "0", "0", "0", "0", "0" , "0" , "0"]
+            else:
+                states_list = ["0", "0", "0", "0", "0", "0"]
             states_list[self._pin - 1] = "2"
             command = f"AT+SetOut={self._id},{','.join(states_list)}"
             send_command(command)

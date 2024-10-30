@@ -26,3 +26,8 @@ LOCK_ON_ICON = "mdi:lock"
 LOCK_OFF_ICON = "mdi:lock-open-variant"
 LIGHT_ON_ICON = "mdi:lightbulb-on"
 LIGHT_OFF_ICON = "mdi:lightbulb-off"
+
+CLIMATE_START_TEMPERATURE = 20
+CLIMATE_START_TARGET_TEMPERATURE = 20
+CLIMATE_MIN_TEMP = 5
+CLIMATE_MAX_TEMP = 35
