@@ -42,13 +42,4 @@ Idealne rozwiązanie dla tych, którzy cenią sobie **pełną kontrolę** w każ
 
 ---
 
-### ⚡ **Optymalizacja zużycia energii**
-Możliwość monitorowania zużycia energii przez urządzenia pozwala na:
-- Lepszy wgląd w **koszty eksploatacji**,
-- Tworzenie scenariuszy oszczędnościowych, takich jak **wyłączanie sprzętu w trybie standby**.
-
-To sposób na **niższe rachunki** i bardziej ekologiczne zarządzanie domem.
-
----
-
 💡 Integracja Gryf Smart z Home Assistant to krok w stronę **bardziej funkcjonalnego** i **oszczędnego domu**, zapewniając zaawansowane zarządzanie sprzętem oraz automatyzację codziennych zadań.
